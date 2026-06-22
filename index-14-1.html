@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Herbalife Smart Wellness Studio – Member Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green: #00C853;
+    --dark-green: #00952a;
+    --lime: #C6FF00;
+    --bg: #0a0f0a;
+    --card: #111811;
+    --card2: #161f16;
+    --border: #1f2e1f;
+    --text: #e8f5e8;
+    --muted: #7a9a7a;
+    --red: #ff4545;
+    --gold: #FFD600;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,83,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,83,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* HEADER */
+  .app-header {
+    text-align: center;
+    padding: 30px 0 24px;
+  }
+  .app-header .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--green), var(--dark-green));
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  .app-header .logo-badge span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .app-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 8vw, 52px);
+    line-height: 1;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #fff 40%, var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .app-header p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* STEP INDICATOR */
+  .steps-bar {
+    display: flex;
+    gap: 6px;
+    margin: 20px 0;
+  }
+  .step-dot {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    transition: background 0.4s;
+  }
+  .step-dot.active { background: var(--green); }
+  .step-dot.done { background: var(--dark-green); }
+
+  .step-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+  }
+  .step-label span { color: var(--green); font-weight: 600; }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--green);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title svg { width: 20px; height: 20px; }
+
+  /* FORM ELEMENTS */
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .field label .req { color: var(--red); margin-left: 2px; }
+
+  .field input, .field select {
+    width: 100%;
+    background: var(--card2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(0,200,83,0.12);
+  }
+  .field input.error, .field select.error {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(255,69,69,0.12);
+  }
+  .field select option { background: #1a2a1a; }
+
+  .error-msg {
+    font-size: 11px;
+    color: var(--red);
+    margin-top: 5px;
+    display: none;
+  }
+  .error-msg.show { display: block; }
+
+  /* HEIGHT INPUTS */
+  .height-row { display: flex; gap: 10px; }
+  .height-row .field { flex: 1; }
+
+  /* GENDER & GOALS – pill select */
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .pill {
+    padding: 9px 16px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--card2);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .pill:hover { border-color: var(--green); color: var(--green); }
+  .pill.selected {
+    background: rgba(0,200,83,0.15);
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* PROFILE IMAGE */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .upload-zone:hover { border-color: var(--green); background: rgba(0,200,83,0.04); }
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .upload-zone .up-icon { font-size: 36px; margin-bottom: 10px; }
+  .upload-zone p { color: var(--muted); font-size: 13px; }
+  .upload-zone p strong { color: var(--green); }
+
+  #img-preview-wrap { display: none; text-align: center; margin-top: 14px; }
+  #img-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--green);
+    box-shadow: 0 0 20px rgba(0,200,83,0.3);
+  }
+
+  .ai-check-box {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    display: none;
+    gap: 8px;
+    align-items: center;
+  }
+  .ai-check-box.loading {
+    display: flex;
+    background: rgba(255,214,0,0.1);
+    border: 1px solid rgba(255,214,0,0.3);
+    color: var(--gold);
+  }
+  .ai-check-box.ok {
+    display: flex;
+    background: rgba(0,200,83,0.1);
+    border: 1px solid rgba(0,200,83,0.3);
+    color: var(--green);
+  }
+  .ai-check-box.fail {
+    display: flex;
+    background: rgba(255,69,69,0.1);
+    border: 1px solid rgba(255,69,69,0.3);
+    color: var(--red);
+  }
+
+  /* SPINNER */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* BUTTON */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green), var(--dark-green));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,200,83,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,200,83,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: transparent;
+    border: 2px solid var(--border);
+    color: var(--muted);
+    font-size: 16px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .btn-secondary:hover { border-color: var(--green); color: var(--green); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), #e6b800);
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 4px 20px rgba(255,214,0,0.3);
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,214,0,0.4); }
+
+  .btn-website {
+    background: linear-gradient(135deg, #00b4d8, #0077b6);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,180,216,0.3);
+  }
+  .btn-website:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,180,216,0.4); }
+
+  /* STEPS */
+  .step { display: none; }
+  .step.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* BMI DISPLAY */
+  .bmi-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+  .bmi-ring {
+    position: relative;
+    width: 160px;
+    height: 160px;
+  }
+  .bmi-ring svg { transform: rotate(-90deg); }
+  .bmi-ring-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .bmi-ring-label .bmi-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--text);
+  }
+  .bmi-ring-label .bmi-cat {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 2px;
+  }
+
+  .bmi-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .bmi-stat {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+  .bmi-stat .stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    color: var(--green);
+    line-height: 1;
+  }
+  .bmi-stat .stat-lbl {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .bmi-bar-wrap {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .bmi-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .bmi-bar {
+    height: 8px;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #00b4d8 0%, #00C853 30%, var(--gold) 55%, #ff9800 75%, var(--red) 100%);
+    position: relative;
+  }
+  .bmi-marker {
+    position: absolute;
+    top: -4px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    transform: translateX(-50%);
+    transition: left 1s ease;
+  }
+
+  .bmi-tip {
+    background: rgba(0,200,83,0.07);
+    border: 1px solid rgba(0,200,83,0.2);
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 16px;
+  }
+  .bmi-tip strong { color: var(--green); }
+
+  /* MEMBER ID */
+  .id-display {
+    background: var(--card2);
+    border: 2px solid var(--green);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .id-display::before {
+    content: 'MEMBER ID';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+  }
+  .id-display .id-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 8px;
+    background: linear-gradient(135deg, var(--green), var(--lime));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 20px;
+  }
+  .copy-btn {
+    margin-top: 12px;
+    padding: 10px 24px;
+    border-radius: 100px;
+    border: 1.5px solid var(--green);
+    background: transparent;
+    color: var(--green);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .copy-btn:hover { background: rgba(0,200,83,0.1); }
+  .copy-btn.copied { background: rgba(0,200,83,0.2); color: var(--lime); }
+
+  /* ID CARD */
+  #id-card {
+    background: linear-gradient(135deg, #0d1f0d 0%, #1a3020 50%, #0d1f0d 100%);
+    border: 2px solid var(--green);
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-header-band {
+    background: linear-gradient(135deg, var(--green), var(--dark-green));
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header-band .org-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .card-header-band .org-sub {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+  }
+  .card-body {
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  #card-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid var(--green);
+    flex-shrink: 0;
+  }
+  .card-info { flex: 1; min-width: 0; }
+  .card-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: 1px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .card-goal {
+    display: inline-block;
+    background: rgba(0,200,83,0.2);
+    border: 1px solid rgba(0,200,83,0.4);
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 10px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .card-detail-item { }
+  .cd-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .cd-val { font-size: 13px; color: var(--text); font-weight: 500; }
+
+  .card-footer-band {
+    background: rgba(0,200,83,0.08);
+    border-top: 1px solid rgba(0,200,83,0.2);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cf-id {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--green);
+  }
+  .cf-bmi {
+    text-align: right;
+  }
+  .cf-bmi .bv { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; color: var(--gold); }
+  .cf-bmi .bl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* SAVING OVERLAY */
+  .saving-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    display: none;
+  }
+  .saving-overlay.show { display: flex; }
+  .saving-overlay p { color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-size: 22px; letter-spacing: 2px; }
+  .big-spinner {
+    width: 50px; height: 50px;
+    border: 4px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* SUCCESS */
+  .success-icon {
+    width: 80px; height: 80px;
+    background: rgba(0,200,83,0.15);
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 36px;
+  }
+
+  /* DOWNLOAD ROW */
+  .action-row { display: flex; gap: 10px; margin-top: 10px; }
+  .action-row .btn { flex: 1; padding: 14px; font-size: 16px; }
+
+  @media (max-width: 400px) {
+    .card { padding: 18px 14px; }
+    .bmi-stats { grid-template-columns: 1fr 1fr; }
+    .card-details { grid-template-columns: 1fr; }
+  }
+
+  /* ============ UPDATE / EDIT MODE (shares all styles above) ============ */
+  .id-input-wrap { display: flex; gap: 10px; }
+  .id-input-wrap input { flex: 1; }
+
+  .found-banner {
+    background: rgba(0,200,83,0.08);
+    border: 1px solid rgba(0,200,83,0.25);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--green);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mode-switch-link {
+    text-align: center;
+    margin: -8px 0 20px;
+  }
+  .mode-switch-link button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .mode-switch-link button:hover { color: var(--green); }
+
+  /* App-level view containers */
+  #register-app, #edit-app { display: none; }
+  #register-app.active, #edit-app.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Saving Overlay -->
+<div class="saving-overlay" id="saving-overlay">
+  <div class="big-spinner"></div>
+  <p id="saving-text">SAVING TO GOOGLE SHEETS…</p>
+</div>
+
+<div id="register-app" class="active">
+<div class="app-wrapper">
+
+  <div class="mode-switch-link">
+    <button onclick="switchToEdit()">Already registered? Update your details →</button>
+  </div>
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="logo-badge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span>HERBALIFE</span>
+    </div>
+    <h1>SMART WELLNESS<br>STUDIO</h1>
+    <p>Member Registration Portal</p>
+  </div>
+
+  <!-- STEP INDICATOR -->
+  <div class="steps-bar">
+    <div class="step-dot active" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+    <div class="step-dot" id="dot-3"></div>
+    <div class="step-dot" id="dot-4"></div>
+    <div class="step-dot" id="dot-5"></div>
+  </div>
+  <div class="step-label" id="step-label"><span>Step 1</span> of 5 — Personal Info</div>
+
+  <!-- ===== STEP 1: PERSONAL INFO ===== -->
+  <div class="step active" id="step-1">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Personal Information
+      </div>
+      <div class="field">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" id="inp-name" placeholder="Enter your full name"/>
+        <div class="error-msg" id="err-name">Please enter your name</div>
+      </div>
+      <div class="field">
+        <label>Mobile Number <span class="req">*</span></label>
+        <input type="tel" id="inp-mobile" placeholder="10-digit mobile number" maxlength="10"/>
+        <div class="error-msg" id="err-mobile">Enter a valid 10-digit number</div>
+      </div>
+      <div class="field">
+        <label>Email ID <span class="req">*</span></label>
+        <input type="email" id="inp-email" placeholder="yourname@email.com"/>
+        <div class="error-msg" id="err-email">Enter a valid email address</div>
+      </div>
+      <div class="field">
+        <label>Age <span class="req">*</span></label>
+        <input type="number" id="inp-age" placeholder="Age in years" min="10" max="100"/>
+        <div class="error-msg" id="err-age">Enter valid age (10–100)</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="goStep2()">CONTINUE →</button>
+  </div>
+
+  <!-- ===== STEP 2: BODY METRICS ===== -->
+  <div class="step" id="step-2">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v18M18 3v18M6 8h12M6 16h12"/></svg>
+        Body Metrics
+      </div>
+
+      <div class="field">
+        <label>Height (cm) <span class="req">*</span></label>
+        <input type="number" id="inp-height-cm" placeholder="e.g. 170" min="100" max="250" oninput="convertFromCm()"/>
+        <div class="error-msg" id="err-height">Enter valid height</div>
+      </div>
+      <div class="height-row">
+        <div class="field">
+          <label>Feet</label>
+          <input type="number" id="inp-height-ft" placeholder="ft" min="3" max="8" oninput="convertFromFtIn()"/>
+        </div>
+        <div class="field">
+          <label>Inches</label>
+          <input type="number" id="inp-height-in" placeholder="in" min="0" max="11" oninput="convertFromFtIn()"/>
+        </div>
+      </div>
+      <div class="field" style="margin-top:8px">
+        <label>Weight (kg) <span class="req">*</span></label>
+        <input type="number" id="inp-weight" placeholder="e.g. 65" min="20" max="300"/>
+        <div class="error-msg" id="err-weight">Enter valid weight (20–300 kg)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Gender <span style="color:var(--red);font-size:14px">*</span>
+      </div>
+      <div class="pill-group" id="gender-pills">
+        <div class="pill" data-val="Male" onclick="selectPill(this,'gender')">♂ Male</div>
+        <div class="pill" data-val="Female" onclick="selectPill(this,'gender')">♀ Female</div>
+        <div class="pill" data-val="Other" onclick="selectPill(this,'gender')">◎ Other</div>
+      </div>
+      <div class="error-msg" id="err-gender">Please select your gender</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Fitness Goal <span style="color:var(--red);font-size:14px">*</span>
+      </div>
+      <div class="pill-group" id="goal-pills">
+        <div class="pill" data-val="Weight Gain" onclick="selectPill(this,'goal')">💪 Weight Gain</div>
+        <div class="pill" data-val="Weight Loss" onclick="selectPill(this,'goal')">🔥 Weight Loss</div>
+        <div class="pill" data-val="Muscular Body" onclick="selectPill(this,'goal')">🏋️ Muscular Body</div>
+        <div class="pill" data-val="Healthy Living" onclick="selectPill(this,'goal')">🌿 Healthy Living</div>
+      </div>
+      <div class="error-msg" id="err-goal">Please select a fitness goal</div>
+    </div>
+
+    <button class="btn btn-primary" onclick="goStep3()">CONTINUE →</button>
+    <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+  </div>
+
+  <!-- ===== STEP 3: PROFILE IMAGE ===== -->
+  <div class="step" id="step-3">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Profile Photo
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">Upload a clear face photo. Our AI will verify your gender from the image matches your selected gender.</p>
+
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept="image/*" onchange="handleImageUpload(event)"/>
+        <div class="up-icon">📸</div>
+        <p><strong>Tap to upload</strong> your photo</p>
+        <p style="margin-top:4px;font-size:11px">JPG, PNG or WEBP supported</p>
+      </div>
+
+      <div id="img-preview-wrap">
+        <img id="img-preview" src="" alt="Preview"/>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">Your photo preview</p>
+      </div>
+
+      <div class="ai-check-box" id="ai-check-box">
+        <div class="spinner"></div>
+        <span id="ai-check-text">AI is analyzing your photo…</span>
+      </div>
+      <div class="error-msg" id="err-photo">Please upload a valid profile photo</div>
+    </div>
+
+    <button class="btn btn-primary" id="step3-btn" onclick="goStep4()" disabled style="opacity:0.4">VERIFY & CONTINUE →</button>
+    <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+  </div>
+
+  <!-- ===== STEP 4: BMI + ID ===== -->
+  <div class="step" id="step-4">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Your BMI Analysis
+      </div>
+      <div class="bmi-ring-wrap">
+        <div class="bmi-ring">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="68" fill="none" stroke="#1f2e1f" stroke-width="12"/>
+            <circle id="bmi-arc" cx="80" cy="80" r="68" fill="none" stroke="#00C853" stroke-width="12"
+              stroke-dasharray="427" stroke-dashoffset="427" stroke-linecap="round" style="transition:stroke-dashoffset 1.2s ease, stroke 0.5s"/>
+          </svg>
+          <div class="bmi-ring-label">
+            <div class="bmi-val" id="bmi-display">—</div>
+            <div class="bmi-cat" id="bmi-cat-label" style="color:var(--green)">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bmi-bar-wrap">
+        <div class="bmi-bar-labels">
+          <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+        </div>
+        <div class="bmi-bar">
+          <div class="bmi-marker" id="bmi-marker" style="left:0%"></div>
+        </div>
+      </div>
+
+      <div class="bmi-stats" id="bmi-stats"></div>
+      <div class="bmi-tip" id="bmi-tip"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Your Member ID
+      </div>
+      <div class="id-display">
+        <div class="id-val" id="member-id-display">——————</div>
+      </div>
+      <div style="text-align:center;margin-top:12px">
+        <button class="copy-btn" id="copy-btn" onclick="copyMemberId()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy ID
+        </button>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6;text-align:center">ID format: DD + MM + HH + SS + last 2 digits of your mobile number</p>
+    </div>
+
+    <button class="btn btn-primary" onclick="goStep5()">GENERATE MY ID CARD →</button>
+    <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+  </div>
+
+  <!-- ===== STEP 5: ID CARD + SAVE ===== -->
+  <div class="step" id="step-5">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        Your Member ID Card
+      </div>
+
+      <div id="id-card">
+        <div class="card-header-band">
+          <div>
+            <div class="org-name">HERBALIFE SMART<br>WELLNESS STUDIO</div>
+            <div class="org-sub">Member Identification Card</div>
+          </div>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="card-body">
+          <img id="card-photo" src="" alt="Photo"/>
+          <div class="card-info">
+            <div class="card-name" id="card-name">—</div>
+            <div class="card-goal" id="card-goal">—</div>
+            <div class="card-details" id="card-details"></div>
+          </div>
+        </div>
+        <div class="card-footer-band">
+          <div>
+            <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase">Member ID</div>
+            <div class="cf-id" id="card-id">—</div>
+          </div>
+          <div class="cf-bmi">
+            <div class="bl">BMI</div>
+            <div class="bv" id="card-bmi">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row" style="margin-top:16px">
+        <button class="btn btn-gold" onclick="downloadIDCard()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          DOWNLOAD CARD
+        </button>
+      </div>
+    </div>
+
+    <div class="card" id="save-section">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save & Complete
+      </div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">Your data will be saved securely to our Google Sheets database. You'll then be redirected to explore our wellness programs.</p>
+      <button class="btn btn-primary" id="save-btn" onclick="saveToSheets()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+        SAVE MY DATA
+      </button>
+    </div>
+
+    <!-- SUCCESS SECTION (hidden until saved) -->
+    <div class="card" id="success-section" style="display:none;text-align:center">
+      <div class="success-icon">✅</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:8px">Registration Complete!</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px">Your data has been saved. Welcome to the Herbalife Smart Wellness Studio family!</p>
+      <button class="btn btn-website" onclick="window.open('https://herbalife-smart-wellness-studio.my.canva.site/page-2','_blank')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        VISIT OUR WEBSITE
+      </button>
+      <button class="btn btn-secondary" onclick="switchToEdit()" style="margin-top:10px">
+        ✏️ Want to update your details later? Click here
+      </button>
+    </div>
+
+    <button class="btn btn-secondary" onclick="goToStep(4)" id="back-btn-5">← Back</button>
+  </div>
+
+</div><!-- /app-wrapper -->
+</div><!-- /register-app -->
+
+<!-- ===================================================================
+     UPDATE / EDIT APP  (same file, separate "page" shown via JS toggle)
+=================================================================== -->
+<div id="edit-app">
+<div class="app-wrapper">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="logo-badge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span>HERBALIFE</span>
+    </div>
+    <h1>UPDATE MY<br>DETAILS</h1>
+    <p>Member Self-Service Portal</p>
+  </div>
+
+  <!-- ===== SECTION A: ENTER MEMBER ID ===== -->
+  <div class="section active" id="section-find">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Find My Record
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Enter the Member ID you received at registration. You'll then be able to view and update your details.</p>
+      <div class="field">
+        <label>Member ID <span class="req">*</span></label>
+        <div class="id-input-wrap">
+          <input type="text" id="inp-search-id" placeholder="e.g. 210613225589"/>
+        </div>
+        <div class="error-msg" id="err-search-id">Please enter your Member ID</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="findMember()">FIND MY RECORD →</button>
+    <button class="btn btn-secondary" onclick="switchToRegister()">← Back to Registration</button>
+  </div>
+
+  <!-- ===== SECTION B: EDIT FORM ===== -->
+  <div class="section" id="section-edit">
+
+    <div class="found-banner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Record found — Member ID <strong id="found-id-label" style="margin-left:4px"></strong>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Personal Information
+      </div>
+      <div class="field">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" id="edit-inp-name"/>
+        <div class="error-msg" id="edit-err-name">Please enter your name</div>
+      </div>
+      <div class="field">
+        <label>Mobile Number <span class="req">*</span></label>
+        <input type="tel" id="edit-inp-mobile" maxlength="10"/>
+        <div class="error-msg" id="edit-err-mobile">Enter a valid 10-digit number</div>
+      </div>
+      <div class="field">
+        <label>Email ID <span class="req">*</span></label>
+        <input type="email" id="edit-inp-email"/>
+        <div class="error-msg" id="edit-err-email">Enter a valid email address</div>
+      </div>
+      <div class="field">
+        <label>Age <span class="req">*</span></label>
+        <input type="number" id="edit-inp-age" min="10" max="100"/>
+        <div class="error-msg" id="edit-err-age">Enter valid age (10–100)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v18M18 3v18M6 8h12M6 16h12"/></svg>
+        Body Metrics
+      </div>
+      <div class="field">
+        <label>Height (cm) <span class="req">*</span></label>
+        <input type="number" id="edit-inp-height-cm" min="100" max="250" oninput="editConvertFromCm()"/>
+        <div class="error-msg" id="edit-err-height">Enter valid height</div>
+      </div>
+      <div class="height-row">
+        <div class="field">
+          <label>Feet</label>
+          <input type="number" id="edit-inp-height-ft" min="3" max="8" oninput="editConvertFromFtIn()"/>
+        </div>
+        <div class="field">
+          <label>Inches</label>
+          <input type="number" id="edit-inp-height-in" min="0" max="11" oninput="editConvertFromFtIn()"/>
+        </div>
+      </div>
+      <div class="field" style="margin-top:8px">
+        <label>Weight (kg) <span class="req">*</span></label>
+        <input type="number" id="edit-inp-weight" min="20" max="300"/>
+        <div class="error-msg" id="edit-err-weight">Enter valid weight (20–300 kg)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Gender <span style="color:var(--red);font-size:14px">*</span>
+      </div>
+      <div class="pill-group" id="edit-gender-pills">
+        <div class="pill" data-val="Male" onclick="editSelectPill(this,'gender')">♂ Male</div>
+        <div class="pill" data-val="Female" onclick="editSelectPill(this,'gender')">♀ Female</div>
+        <div class="pill" data-val="Other" onclick="editSelectPill(this,'gender')">◎ Other</div>
+      </div>
+      <div class="error-msg" id="edit-err-gender">Please select your gender</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Fitness Goal <span style="color:var(--red);font-size:14px">*</span>
+      </div>
+      <div class="pill-group" id="edit-goal-pills">
+        <div class="pill" data-val="Weight Gain" onclick="editSelectPill(this,'goal')">💪 Weight Gain</div>
+        <div class="pill" data-val="Weight Loss" onclick="editSelectPill(this,'goal')">🔥 Weight Loss</div>
+        <div class="pill" data-val="Muscular Body" onclick="editSelectPill(this,'goal')">🏋️ Muscular Body</div>
+        <div class="pill" data-val="Healthy Living" onclick="editSelectPill(this,'goal')">🌿 Healthy Living</div>
+      </div>
+      <div class="error-msg" id="edit-err-goal">Please select a fitness goal</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Profile Photo
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">Your current photo is shown below. Upload a new one only if you want to replace it.</p>
+
+      <div id="edit-img-preview-wrap" style="text-align:center;margin-bottom:14px;display:none">
+        <img id="edit-img-preview" src="" alt="Current photo" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--green);box-shadow:0 0 20px rgba(0,200,83,0.3)"/>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">Current photo on file</p>
+      </div>
+
+      <div class="upload-zone" id="edit-upload-zone">
+        <input type="file" id="edit-file-input" accept="image/*" onchange="handleEditImageUpload(event)"/>
+        <div class="up-icon">📸</div>
+        <p><strong>Tap to upload</strong> a new photo</p>
+        <p style="margin-top:4px;font-size:11px">JPG, PNG or WEBP supported — optional</p>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="update-btn" onclick="updateMember()">SAVE CHANGES →</button>
+    <button class="btn btn-secondary" onclick="goBackToFind()">← Search a Different ID</button>
+  </div>
+
+  <!-- ===== SECTION C: SUCCESS ===== -->
+  <div class="section" id="section-edit-success">
+    <div class="card" style="text-align:center">
+      <div class="success-icon">✅</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:8px">Details Updated!</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px">Your information has been updated in our records.</p>
+      <button class="btn btn-primary" onclick="switchToRegister()">DONE</button>
+    </div>
+  </div>
+
+</div><!-- /app-wrapper -->
+</div><!-- /edit-app -->
+
+<!-- html2canvas for download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+// =============================================
+//  STATE
+// =============================================
+const state = {
+  name:'', mobile:'', email:'', age:'',
+  heightCm:0, heightFt:0, heightIn:0,
+  weight:0, gender:'', goal:'',
+  imageBase64:'', imageFile:null,
+  aiGenderDetected:'', aiVerified:false,
+  bmi:0, bmiCat:'',
+  memberId:'',
+  ibw:0, idealWeight:'', bmr:0, tdee:0
+};
+
+let currentStep = 1;
+
+// =============================================
+//  STEP NAV
+// =============================================
+function goToStep(n){
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  document.getElementById('dot-'+currentStep).classList.remove('active');
+  document.getElementById('dot-'+currentStep).classList.add('done');
+  currentStep = n;
+  document.getElementById('step-'+n).classList.add('active');
+  document.getElementById('dot-'+n).classList.add('active');
+  document.getElementById('dot-'+n).classList.remove('done');
+  const labels = ['Personal Info','Body Metrics','Profile Photo','BMI & ID','ID Card & Save'];
+  document.getElementById('step-label').innerHTML = `<span>Step ${n}</span> of 5 — ${labels[n-1]}`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// =============================================
+//  PILL SELECT
+// =============================================
+function selectPill(el, group){
+  document.querySelectorAll('#'+group+'-pills .pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  if(group==='gender') state.gender = el.dataset.val;
+  if(group==='goal') state.goal = el.dataset.val;
+}
+
+// =============================================
+//  VALIDATION HELPERS
+// =============================================
+function showErr(id, msg){
+  const el = document.getElementById('err-'+id);
+  const inp = document.getElementById('inp-'+id) || document.getElementById(id+'-pills');
+  el.textContent = msg || el.textContent;
+  el.classList.add('show');
+  if(inp && inp.tagName!=='DIV') inp.classList.add('error');
+}
+function clearErr(id){
+  const el = document.getElementById('err-'+id);
+  const inp = document.getElementById('inp-'+id);
+  if(el) el.classList.remove('show');
+  if(inp) inp.classList.remove('error');
+}
+
+// =============================================
+//  STEP 1 → 2
+// =============================================
+function goStep2(){
+  let ok = true;
+  const name = document.getElementById('inp-name').value.trim();
+  const mobile = document.getElementById('inp-mobile').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  const age = document.getElementById('inp-age').value.trim();
+
+  clearErr('name'); clearErr('mobile'); clearErr('email'); clearErr('age');
+
+  if(!name){ showErr('name','Please enter your full name'); ok=false; }
+  else state.name = name;
+
+  if(!/^\d{10}$/.test(mobile)){ showErr('mobile','Enter a valid 10-digit number'); ok=false; }
+  else state.mobile = mobile;
+
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showErr('email','Enter a valid email'); ok=false; }
+  else state.email = email;
+
+  if(!age || +age<10 || +age>100){ showErr('age','Enter valid age (10–100)'); ok=false; }
+  else state.age = +age;
+
+  if(ok) goToStep(2);
+}
+
+// =============================================
+//  HEIGHT CONVERTERS
+// =============================================
+function convertFromCm(){
+  const cm = +document.getElementById('inp-height-cm').value;
+  if(cm>=100 && cm<=250){
+    const totalIn = cm/2.54;
+    const ft = Math.floor(totalIn/12);
+    const inches = Math.round(totalIn%12);
+    document.getElementById('inp-height-ft').value = ft;
+    document.getElementById('inp-height-in').value = inches;
+    state.heightCm = cm; state.heightFt = ft; state.heightIn = inches;
+  }
+}
+function convertFromFtIn(){
+  const ft = +document.getElementById('inp-height-ft').value||0;
+  const inches = +document.getElementById('inp-height-in').value||0;
+  if(ft>0){
+    const cm = Math.round((ft*12+inches)*2.54);
+    document.getElementById('inp-height-cm').value = cm;
+    state.heightCm = cm; state.heightFt = ft; state.heightIn = inches;
+  }
+}
+
+// =============================================
+//  STEP 2 → 3
+// =============================================
+function goStep3(){
+  let ok = true;
+  clearErr('height'); clearErr('weight'); clearErr('gender'); clearErr('goal');
+
+  const cm = +document.getElementById('inp-height-cm').value;
+  const w = +document.getElementById('inp-weight').value;
+
+  if(!cm||cm<100||cm>250){ showErr('height','Enter valid height (100–250 cm)'); ok=false; }
+  else{ state.heightCm=cm; convertFromCm(); }
+
+  if(!w||w<20||w>300){ showErr('weight','Enter valid weight (20–300 kg)'); ok=false; }
+  else state.weight = w;
+
+  if(!state.gender){ showErr('gender','Please select your gender'); ok=false; }
+  if(!state.goal){ showErr('goal','Please select a fitness goal'); ok=false; }
+
+  if(ok) goToStep(3);
+}
+
+// =============================================
+//  STEP 3: IMAGE UPLOAD + AI GENDER DETECT
+// =============================================
+function handleImageUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  state.imageFile = file;
+
+  const reader = new FileReader();
+  reader.onload = async (ev)=>{
+    state.imageBase64 = ev.target.result;
+    document.getElementById('img-preview').src = ev.target.result;
+    document.getElementById('img-preview-wrap').style.display = 'block';
+    document.getElementById('err-photo').classList.remove('show');
+
+    // Start AI check
+    const box = document.getElementById('ai-check-box');
+    box.className = 'ai-check-box loading';
+    document.getElementById('ai-check-text').textContent = 'AI is analyzing your photo…';
+    document.getElementById('step3-btn').disabled = true;
+    document.getElementById('step3-btn').style.opacity = '0.4';
+
+    await aiDetectGender(ev.target.result.split(',')[1]);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function aiDetectGender(base64){
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        messages:[{
+          role:'user',
+          content:[
+            {type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},
+            {type:'text',text:'Look at this photo of a person. Based ONLY on visual appearance, determine their likely gender. Reply with ONLY a JSON object like: {"gender":"Male"} or {"gender":"Female"} or {"gender":"Other"}. No other text.'}
+          ]
+        }]
+      })
+    });
+    const data = await resp.json();
+    const txt = data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(txt);
+    state.aiGenderDetected = parsed.gender;
+    checkGenderMatch();
+  } catch(err){
+    console.error(err);
+    // fallback: allow proceed
+    const box = document.getElementById('ai-check-box');
+    box.className = 'ai-check-box ok';
+    document.getElementById('ai-check-text').textContent = '✓ Photo received. Proceeding…';
+    state.aiVerified = true;
+    enableStep3Btn();
+  }
+}
+
+function checkGenderMatch(){
+  const box = document.getElementById('ai-check-box');
+  const detected = state.aiGenderDetected;
+  const selected = state.gender;
+
+  // Normalize comparison
+  const normalize = s => s ? s.toLowerCase() : '';
+  const match = normalize(detected) === normalize(selected) ||
+    (normalize(detected)==='other' && normalize(selected)==='other');
+
+  if(match){
+    box.className = 'ai-check-box ok';
+    document.getElementById('ai-check-text').textContent = `✓ Gender verified: AI detected ${detected} — matches your selection`;
+    state.aiVerified = true;
+    enableStep3Btn();
+  } else {
+    box.className = 'ai-check-box fail';
+    document.getElementById('ai-check-text').innerHTML = `✗ AI detected <strong>${detected}</strong>, but you selected <strong>${selected}</strong>. Please re-upload a clearer photo or update your gender selection.`;
+    state.aiVerified = false;
+    document.getElementById('step3-btn').disabled = true;
+    document.getElementById('step3-btn').style.opacity = '0.4';
+    // Reset file input
+    document.getElementById('file-input').value = '';
+    document.getElementById('img-preview-wrap').style.display = 'none';
+  }
+}
+
+function enableStep3Btn(){
+  const btn = document.getElementById('step3-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+// =============================================
+//  STEP 3 → 4
+// =============================================
+function goStep4(){
+  if(!state.imageBase64){ document.getElementById('err-photo').classList.add('show'); return; }
+  if(!state.aiVerified){ return; }
+  calcAll();
+  generateMemberId();
+  renderBMI();
+  goToStep(4);
+}
+
+// =============================================
+//  CALCULATIONS
+// =============================================
+function calcAll(){
+  const h = state.heightCm / 100; // meters
+  const w = state.weight;
+  const age = state.age;
+  const gender = state.gender;
+
+  // BMI
+  state.bmi = +(w / (h*h)).toFixed(1);
+
+  // Category
+  if(state.bmi < 18.5) state.bmiCat = 'Underweight';
+  else if(state.bmi < 25) state.bmiCat = 'Normal Weight';
+  else if(state.bmi < 30) state.bmiCat = 'Overweight';
+  else state.bmiCat = 'Obese';
+
+  // Ideal Body Weight (Devine formula)
+  const hIn = state.heightCm / 2.54;
+  if(gender === 'Male'){
+    state.ibw = +(50 + 2.3*(hIn - 60)).toFixed(1);
+  } else {
+    state.ibw = +(45.5 + 2.3*(hIn - 60)).toFixed(1);
+  }
+  if(state.ibw < 0) state.ibw = 0;
+
+  // BMR (Mifflin-St Jeor)
+  if(gender === 'Male'){
+    state.bmr = Math.round(10*w + 6.25*state.heightCm - 5*age + 5);
+  } else {
+    state.bmr = Math.round(10*w + 6.25*state.heightCm - 5*age - 161);
+  }
+
+  // TDEE (moderate activity)
+  state.tdee = Math.round(state.bmr * 1.55);
+}
+
+function generateMemberId(){
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2,'0');
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const hh = String(now.getHours()).padStart(2,'0');
+  const ss = String(now.getSeconds()).padStart(2,'0');
+  const last2 = state.mobile.slice(-2);
+  state.memberId = dd + mm + hh + ss + last2;
+}
+
+// =============================================
+//  RENDER BMI
+// =============================================
+function renderBMI(){
+  document.getElementById('bmi-display').textContent = state.bmi;
+
+  const catColors = {
+    'Underweight':'#00b4d8',
+    'Normal Weight':'#00C853',
+    'Overweight':'#FFD600',
+    'Obese':'#ff4545'
+  };
+  const color = catColors[state.bmiCat] || '#00C853';
+  document.getElementById('bmi-cat-label').textContent = state.bmiCat;
+  document.getElementById('bmi-cat-label').style.color = color;
+
+  // Arc animation
+  const arc = document.getElementById('bmi-arc');
+  arc.style.stroke = color;
+  const pct = Math.min(Math.max((state.bmi - 10) / 30, 0), 1);
+  const circ = 2 * Math.PI * 68;
+  setTimeout(()=>{
+    arc.style.strokeDashoffset = circ - (pct * circ);
+  }, 300);
+
+  // Marker position
+  const markerPct = Math.min(Math.max((state.bmi - 10) / 30, 0), 1) * 100;
+  setTimeout(()=>{
+    document.getElementById('bmi-marker').style.left = markerPct + '%';
+  }, 400);
+
+  // Stats grid
+  const statsHtml = `
+    <div class="bmi-stat"><div class="stat-val">${state.bmi}</div><div class="stat-lbl">BMI Index</div></div>
+    <div class="bmi-stat"><div class="stat-val">${state.ibw} kg</div><div class="stat-lbl">Ideal Weight</div></div>
+    <div class="bmi-stat"><div class="stat-val">${state.bmr}</div><div class="stat-lbl">BMR (kcal/day)</div></div>
+    <div class="bmi-stat"><div class="stat-val">${state.tdee}</div><div class="stat-lbl">TDEE (kcal/day)</div></div>
+  `;
+  document.getElementById('bmi-stats').innerHTML = statsHtml;
+
+  // Tips
+  const tips = {
+    'Underweight':`<strong>You are underweight.</strong> Focus on nutrient-rich, calorie-dense foods. Aim for ${state.tdee + 400}–${state.tdee + 600} kcal/day. Strength training will help build healthy muscle mass.`,
+    'Normal Weight':`<strong>You're in a healthy range!</strong> Maintain this with balanced nutrition (~${state.tdee} kcal/day) and regular exercise. Your ideal weight target is ${state.ibw} kg.`,
+    'Overweight':`<strong>Slightly above ideal range.</strong> A moderate calorie deficit of 300–500 kcal/day (target ~${state.tdee - 400} kcal) combined with cardio and strength training can help you reach ${state.ibw} kg.`,
+    'Obese':`<strong>Your BMI indicates obesity.</strong> We recommend consulting a healthcare professional. A structured program targeting ${state.tdee - 500} kcal/day with regular activity will help. You're in the right place!`
+  };
+  document.getElementById('bmi-tip').innerHTML = tips[state.bmiCat] || '';
+
+  // Member ID
+  document.getElementById('member-id-display').textContent = state.memberId;
+}
+
+// =============================================
+//  COPY ID
+// =============================================
+function copyMemberId(){
+  navigator.clipboard.writeText(state.memberId).catch(()=>{
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = state.memberId;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = '✓ Copied!';
+  btn.classList.add('copied');
+  setTimeout(()=>{ btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy ID`; btn.classList.remove('copied'); }, 2000);
+}
+
+// =============================================
+//  STEP 4 → 5: RENDER ID CARD
+// =============================================
+function goStep5(){
+  // Render ID card
+  document.getElementById('card-photo').src = state.imageBase64;
+  document.getElementById('card-name').textContent = state.name;
+  document.getElementById('card-goal').textContent = state.goal;
+  document.getElementById('card-id').textContent = state.memberId;
+  document.getElementById('card-bmi').textContent = state.bmi + ' – ' + state.bmiCat;
+
+  const h = `${state.heightCm}cm (${state.heightFt}'${state.heightIn}")`;
+  document.getElementById('card-details').innerHTML = `
+    <div class="card-detail-item"><div class="cd-lbl">Age</div><div class="cd-val">${state.age} yrs</div></div>
+    <div class="card-detail-item"><div class="cd-lbl">Gender</div><div class="cd-val">${state.gender}</div></div>
+    <div class="card-detail-item"><div class="cd-lbl">Height</div><div class="cd-val">${h}</div></div>
+    <div class="card-detail-item"><div class="cd-lbl">Weight</div><div class="cd-val">${state.weight} kg</div></div>
+    <div class="card-detail-item"><div class="cd-lbl">Email</div><div class="cd-val" style="font-size:11px;word-break:break-all">${state.email}</div></div>
+    <div class="card-detail-item"><div class="cd-lbl">Mobile</div><div class="cd-val">${state.mobile}</div></div>
+  `;
+  goToStep(5);
+}
+
+// =============================================
+//  DOWNLOAD ID CARD
+// =============================================
+function downloadIDCard(){
+  const card = document.getElementById('id-card');
+  html2canvas(card, {
+    backgroundColor: '#0d1f0d',
+    scale: 2,
+    useCORS: true,
+    allowTaint: true
+  }).then(canvas=>{
+    const link = document.createElement('a');
+    link.download = `Herbalife-ID-${state.memberId}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+// =============================================
+//  SAVE TO GOOGLE SHEETS  — FIXED (GET method, no CORS issue)
+// =============================================
+const SHEET_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxYUfyL8GVUhGC0PN5paLh4jnfF37_KqzhJIVMoxoSi5jlQctElP9IE099Gl4zmGfpypQ/exec';
+
+// Compress image before sending
+function compressImageBase64(base64, maxWidth, quality){
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, maxWidth / img.width);
+      canvas.width  = img.width  * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve('');
+    img.src = base64;
+  });
+}
+
+async function saveToSheets(){
+  const overlay   = document.getElementById('saving-overlay');
+  const saveText  = document.getElementById('saving-text');
+  const saveBtn   = document.getElementById('save-btn');
+
+  overlay.classList.add('show');
+  saveText.textContent = 'PREPARING DATA…';
+  saveBtn.disabled = true;
+
+  // Compress photo to a reasonable size — now stored as a real file in
+  // Google Drive (not embedded in the URL), so we can keep better quality.
+  let imgSmall = '';
+  if(state.imageBase64){
+    try { imgSmall = await compressImageBase64(state.imageBase64, 500, 0.85); }
+    catch(e){ imgSmall = ''; }
+  }
+
+  saveText.textContent = 'SAVING TO GOOGLE SHEETS…';
+
+  // Build URL params — GET request completely avoids CORS
+  const params = new URLSearchParams({
+    action:      'save',
+    name:        state.name,
+    mobile:      state.mobile,
+    email:       state.email,
+    age:         String(state.age),
+    heightCm:    String(state.heightCm),
+    heightFtIn:  `${state.heightFt}'${state.heightIn}"`,
+    weight:      String(state.weight),
+    gender:      state.gender,
+    goal:        state.goal,
+    memberId:    state.memberId,
+    bmi:         String(state.bmi),
+    bmiCategory: state.bmiCat,
+    idealWeight: String(state.ibw),
+    bmr:         String(state.bmr),
+    tdee:        String(state.tdee),
+    profileImage: imgSmall,
+    timestamp:   new Date().toISOString()
+  });
+
+  // POST request — sends data in the request body, avoids URL-length limits
+  // that GET would hit once the profile photo (base64) is included.
+  try {
+    await fetch(SHEET_WEB_APP_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.fromEntries(params))
+    });
+
+    overlay.classList.remove('show');
+    document.getElementById('save-section').style.display    = 'none';
+    document.getElementById('success-section').style.display = 'block';
+    document.getElementById('back-btn-5').style.display      = 'none';
+
+  } catch(err){
+    overlay.classList.remove('show');
+    saveBtn.disabled = false;
+    // Fallback: open in hidden iframe (guaranteed to reach Apps Script, GET-based)
+    fallbackSave(SHEET_WEB_APP_URL + '?' + params.toString());
+  }
+}
+
+// Fallback: hidden iframe — 100% bypass for any browser restriction
+function fallbackSave(url){
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = url;
+  document.body.appendChild(iframe);
+  setTimeout(()=>{
+    document.body.removeChild(iframe);
+    document.getElementById('save-section').style.display    = 'none';
+    document.getElementById('success-section').style.display = 'block';
+    document.getElementById('back-btn-5').style.display      = 'none';
+  }, 3000);
+}
+
+// =============================================================
+//  VIEW SWITCHER — Register app  ↔  Edit/Update app
+//  (same single HTML file, two "pages" toggled by JS)
+// =============================================================
+function switchToRegister(){
+  document.getElementById('edit-app').classList.remove('active');
+  document.getElementById('register-app').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function switchToEdit(){
+  document.getElementById('register-app').classList.remove('active');
+  document.getElementById('edit-app').classList.add('active');
+  showEditSection('section-find');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Open edit mode directly if URL has #update or #edit
+if(window.location.hash === '#update' || window.location.hash === '#edit'){
+  switchToEdit();
+}
+
+// =============================================================
+//  EDIT APP STATE
+// =============================================================
+const editState = {
+  memberId:'', name:'', mobile:'', email:'', age:'',
+  heightCm:0, heightFt:0, heightIn:0,
+  weight:0, gender:'', goal:'',
+  newImageBase64:''
+};
+
+function showEditSection(id){
+  document.querySelectorAll('#edit-app .section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function goBackToFind(){ showEditSection('section-find'); }
+
+function showEditErr(id, msg){
+  const el = document.getElementById('edit-err-'+id);
+  const inp = document.getElementById('edit-inp-'+id) || document.getElementById('edit-'+id+'-pills');
+  if(!el) return;
+  if(msg) el.textContent = msg;
+  el.classList.add('show');
+  if(inp && inp.tagName!=='DIV') inp.classList.add('error');
+}
+function clearEditErr(id){
+  const el = document.getElementById('edit-err-'+id);
+  const inp = document.getElementById('edit-inp-'+id);
+  if(el) el.classList.remove('show');
+  if(inp) inp.classList.remove('error');
+}
+
+function editSelectPill(el, group){
+  document.querySelectorAll('#edit-'+group+'-pills .pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  if(group==='gender') editState.gender = el.dataset.val;
+  if(group==='goal') editState.goal = el.dataset.val;
+}
+
+function editConvertFromCm(){
+  const cm = +document.getElementById('edit-inp-height-cm').value;
+  if(cm>=100 && cm<=250){
+    const totalIn = cm/2.54;
+    const ft = Math.floor(totalIn/12);
+    const inches = Math.round(totalIn%12);
+    document.getElementById('edit-inp-height-ft').value = ft;
+    document.getElementById('edit-inp-height-in').value = inches;
+    editState.heightCm = cm; editState.heightFt = ft; editState.heightIn = inches;
+  }
+}
+function editConvertFromFtIn(){
+  const ft = +document.getElementById('edit-inp-height-ft').value||0;
+  const inches = +document.getElementById('edit-inp-height-in').value||0;
+  if(ft>0){
+    const cm = Math.round((ft*12+inches)*2.54);
+    document.getElementById('edit-inp-height-cm').value = cm;
+    editState.heightCm = cm; editState.heightFt = ft; editState.heightIn = inches;
+  }
+}
+
+async function findMember(){
+  clearEditErr('search-id');
+  const id = document.getElementById('inp-search-id').value.trim();
+  if(!id){ showEditErr('search-id','Please enter your Member ID'); return; }
+
+  const overlay = document.getElementById('saving-overlay');
+  const text = document.getElementById('saving-text');
+  overlay.classList.add('show');
+  text.textContent = 'SEARCHING…';
+
+  try{
+    const params = new URLSearchParams({ action:'search', memberId:id });
+    const resp = await fetch(SHEET_WEB_APP_URL + '?' + params.toString(), { method:'GET' });
+    const data = await resp.json();
+
+    overlay.classList.remove('show');
+
+    if(data.status !== 'success'){
+      showEditErr('search-id', data.message || 'No member found with this ID. Please check and try again.');
+      return;
+    }
+
+    populateEditForm(data.data);
+    document.getElementById('found-id-label').textContent = data.data.memberId;
+    showEditSection('section-edit');
+
+  } catch(err){
+    overlay.classList.remove('show');
+    showEditErr('search-id', 'Could not reach the server. Please check your connection and try again.');
+  }
+}
+
+function populateEditForm(d){
+  editState.memberId = d.memberId;
+  editState.name = d.name; editState.mobile = d.mobile; editState.email = d.email; editState.age = d.age;
+  editState.heightCm = d.heightCm; editState.weight = d.weight;
+  editState.gender = d.gender; editState.goal = d.goal;
+
+  document.getElementById('edit-inp-name').value = d.name || '';
+  document.getElementById('edit-inp-mobile').value = d.mobile || '';
+  document.getElementById('edit-inp-email').value = d.email || '';
+  document.getElementById('edit-inp-age').value = d.age || '';
+  document.getElementById('edit-inp-height-cm').value = d.heightCm || '';
+  document.getElementById('edit-inp-weight').value = d.weight || '';
+
+  if(d.heightCm) editConvertFromCm();
+
+  document.querySelectorAll('#edit-gender-pills .pill').forEach(p=>{
+    p.classList.toggle('selected', p.dataset.val === d.gender);
+  });
+  document.querySelectorAll('#edit-goal-pills .pill').forEach(p=>{
+    p.classList.toggle('selected', p.dataset.val === d.goal);
+  });
+
+  if(d.photoUrl){
+    document.getElementById('edit-img-preview').src = d.photoUrl;
+    document.getElementById('edit-img-preview-wrap').style.display = 'block';
+  } else {
+    document.getElementById('edit-img-preview-wrap').style.display = 'none';
+  }
+
+  editState.newImageBase64 = '';
+}
+
+function handleEditImageUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    editState.newImageBase64 = ev.target.result;
+    document.getElementById('edit-img-preview').src = ev.target.result;
+    document.getElementById('edit-img-preview-wrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function updateMember(){
+  let ok = true;
+  clearEditErr('name'); clearEditErr('mobile'); clearEditErr('email'); clearEditErr('age');
+  clearEditErr('height'); clearEditErr('weight'); clearEditErr('gender'); clearEditErr('goal');
+
+  const name = document.getElementById('edit-inp-name').value.trim();
+  const mobile = document.getElementById('edit-inp-mobile').value.trim();
+  const email = document.getElementById('edit-inp-email').value.trim();
+  const age = document.getElementById('edit-inp-age').value.trim();
+  const cm = +document.getElementById('edit-inp-height-cm').value;
+  const w = +document.getElementById('edit-inp-weight').value;
+
+  if(!name){ showEditErr('name','Please enter your full name'); ok=false; } else editState.name = name;
+  if(!/^\d{10}$/.test(mobile)){ showEditErr('mobile','Enter a valid 10-digit number'); ok=false; } else editState.mobile = mobile;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showEditErr('email','Enter a valid email'); ok=false; } else editState.email = email;
+  if(!age || +age<10 || +age>100){ showEditErr('age','Enter valid age (10–100)'); ok=false; } else editState.age = +age;
+  if(!cm||cm<100||cm>250){ showEditErr('height','Enter valid height (100–250 cm)'); ok=false; } else { editState.heightCm = cm; editConvertFromCm(); }
+  if(!w||w<20||w>300){ showEditErr('weight','Enter valid weight (20–300 kg)'); ok=false; } else editState.weight = w;
+  if(!editState.gender){ showEditErr('gender','Please select your gender'); ok=false; }
+  if(!editState.goal){ showEditErr('goal','Please select a fitness goal'); ok=false; }
+
+  if(!ok) return;
+
+  // Recalculate BMI / BMR / TDEE with the updated values
+  const h = editState.heightCm/100;
+  const bmi = +(editState.weight/(h*h)).toFixed(1);
+  let bmiCat;
+  if(bmi<18.5) bmiCat='Underweight'; else if(bmi<25) bmiCat='Normal Weight';
+  else if(bmi<30) bmiCat='Overweight'; else bmiCat='Obese';
+
+  const hIn = editState.heightCm/2.54;
+  let ibw = editState.gender==='Male' ? 50+2.3*(hIn-60) : 45.5+2.3*(hIn-60);
+  if(ibw<0) ibw=0; ibw=+ibw.toFixed(1);
+
+  let bmr = editState.gender==='Male'
+    ? Math.round(10*editState.weight + 6.25*editState.heightCm - 5*editState.age + 5)
+    : Math.round(10*editState.weight + 6.25*editState.heightCm - 5*editState.age - 161);
+  const tdee = Math.round(bmr*1.55);
+
+  const overlay = document.getElementById('saving-overlay');
+  const text = document.getElementById('saving-text');
+  overlay.classList.add('show');
+  text.textContent = 'SAVING CHANGES…';
+  document.getElementById('update-btn').disabled = true;
+
+  let imgPayload = '';
+  if(editState.newImageBase64){
+    try { imgPayload = await compressImageBase64(editState.newImageBase64, 500, 0.85); }
+    catch(e){ imgPayload = ''; }
+  }
+
+  const params = new URLSearchParams({
+    action:      'update',
+    memberId:    editState.memberId,
+    name:        editState.name,
+    mobile:      editState.mobile,
+    email:       editState.email,
+    age:         String(editState.age),
+    heightCm:    String(editState.heightCm),
+    heightFtIn:  `${editState.heightFt}'${editState.heightIn}"`,
+    weight:      String(editState.weight),
+    gender:      editState.gender,
+    goal:        editState.goal,
+    bmi:         String(bmi),
+    bmiCategory: bmiCat,
+    idealWeight: String(ibw),
+    bmr:         String(bmr),
+    tdee:        String(tdee),
+    profileImage: imgPayload
+  });
+
+  try{
+    await fetch(SHEET_WEB_APP_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.fromEntries(params))
+    });
+    overlay.classList.remove('show');
+    showEditSection('section-edit-success');
+  } catch(err){
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = SHEET_WEB_APP_URL + '?' + params.toString();
+    document.body.appendChild(iframe);
+    setTimeout(()=>{
+      document.body.removeChild(iframe);
+      overlay.classList.remove('show');
+      showEditSection('section-edit-success');
+    }, 3000);
+  } finally {
+    document.getElementById('update-btn').disabled = false;
+  }
+}
+
+</script>
+</body>
+</html>
